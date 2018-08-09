@@ -1,0 +1,37 @@
+import { Renderer, ElementRef, OnInit, ChangeDetectorRef } from '@angular/core';
+import { BaseSearchableComponent, SpecManager } from '../base';
+import { SchemaNormalizer, AppStateService, OptionsService } from '../../services/';
+import { DescendantInfo } from '../../utils/';
+export declare class JsonSchema extends BaseSearchableComponent implements OnInit {
+    private _renderer;
+    private cdr;
+    private _elementRef;
+    private optionsService;
+    pointer: string;
+    absolutePointer: string;
+    final: boolean;
+    nestOdd: boolean;
+    childFor: string;
+    isRequestSchema: boolean;
+    schema: any;
+    activeDescendant: any;
+    discriminator: string;
+    _hasSubSchemas: boolean;
+    properties: any;
+    _isArray: boolean;
+    normalizer: SchemaNormalizer;
+    descendants: DescendantInfo[];
+    constructor(specMgr: SpecManager, app: AppStateService, _renderer: Renderer, cdr: ChangeDetectorRef, _elementRef: ElementRef, optionsService: OptionsService);
+    readonly normPointer: any;
+    selectDescendantByIdx(idx: any): void;
+    selectDescendant(activeDescendant: DescendantInfo): void;
+    initDescendants(): void;
+    init(): void;
+    preprocessSchema(): void;
+    applyStyling(): void;
+    trackByName(_: number, item: any): number;
+    trackByIdx(idx: number, _: any): number;
+    findDescendantWithField(fieldName: string): DescendantInfo;
+    ensureSearchIsShown(ptr: string): void;
+    ngOnInit(): void;
+}

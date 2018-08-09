@@ -1,0 +1,2 @@
+export declare const linkifyMixin: (className: any) => import("styled-components").InterpolationValue[];
+export declare const ShareLink: import("styled-components").StyledComponentClass<import("react").DetailedHTMLProps<import("react").AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>, import("../theme").ResolvedThemeInterface, import("react").DetailedHTMLProps<import("react").AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>>;

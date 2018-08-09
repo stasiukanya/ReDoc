@@ -1,0 +1,20 @@
+export declare const operations: Set<string>;
+export declare const keywordTypes: {
+    multipleOf: string;
+    maximum: string;
+    exclusiveMaximum: string;
+    minimum: string;
+    exclusiveMinimum: string;
+    maxLength: string;
+    minLength: string;
+    pattern: string;
+    items: string;
+    maxItems: string;
+    minItems: string;
+    uniqueItems: string;
+    maxProperties: string;
+    minProperties: string;
+    required: string;
+    additionalProperties: string;
+    properties: string;
+};

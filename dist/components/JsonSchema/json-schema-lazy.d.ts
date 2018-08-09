@@ -1,0 +1,31 @@
+import { ElementRef, ViewContainerRef, OnDestroy, OnInit, AfterViewInit, ComponentFactoryResolver, Renderer } from '@angular/core';
+import { JsonSchema } from './json-schema';
+import { OptionsService } from '../../services/options.service';
+import { SpecManager } from '../../utils/spec-manager';
+export declare class JsonSchemaLazy implements OnDestroy, OnInit, AfterViewInit {
+    private specMgr;
+    private location;
+    private elementRef;
+    private resolver;
+    private optionsService;
+    private _renderer;
+    pointer: string;
+    absolutePointer: string;
+    auto: boolean;
+    isRequestSchema: boolean;
+    final: boolean;
+    nestOdd: boolean;
+    childFor: string;
+    isArray: boolean;
+    disableLazy: boolean;
+    loaded: boolean;
+    constructor(specMgr: SpecManager, location: ViewContainerRef, elementRef: ElementRef, resolver: ComponentFactoryResolver, optionsService: OptionsService, _renderer: Renderer);
+    normalizePointer(): any;
+    private _loadAfterSelf();
+    load(): void;
+    loadCached(): void;
+    projectComponentInputs(instance: JsonSchema): void;
+    ngOnInit(): void;
+    ngAfterViewInit(): void;
+    ngOnDestroy(): void;
+}
