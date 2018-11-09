@@ -82,7 +82,7 @@ const Button = styled.button`
   user-select: none;
   border: 1px solid #ccc;
   border-left: 0;
-  font-size: 16px;
+  font-size: 14px;
   height: 28px;
   box-sizing: border-box;
   vertical-align: middle;
@@ -218,7 +218,7 @@ export default class ComboBox extends React.Component<ComboBoxProps, ComboBoxSta
           onBlur={this.handleBlur}
           onKeyDown={this.handleKeyPress}
         />
-        <Button onClick={this.handleTryItClick}> TRY IT </Button>
+        <Button onClick={this.handleTryItClick}> Try it </Button>
         {open && <DropDownList>{options.map(this.renderOption)}</DropDownList>}
       </ComboBoxWrap>
     );

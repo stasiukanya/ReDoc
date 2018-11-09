@@ -37,6 +37,6 @@
     "./custom.d.ts",
     "./demo/playground/hmr-playground.tsx",
     "./src/**/*.ts?",
-    "demo/*.tsx"
+    "demo/*.tsx", "demo/setValue.ts", "demo/SetValue.ts", "demo/components/FontSizeOption.tsx", "demo/components/FontFamilyOption.tsx", "demo/components/ComboBox.tsx", "demo/components/ColorsOption.tsx", "demo/components/Range.tsx", "demo/components/ThemesPanel.tsx", "demo/components/TextTransformOption.tsx", "demo/components/Range.tsx", "demo/components/TextInput.tsx"
   ]
 }

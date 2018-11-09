@@ -1,9 +1,14 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import styled from 'styled-components';
 import { resolve as urlResolve } from 'url';
-import { RedocStandalone } from '../src';
-import ComboBox from './ComboBox';
+import { RedocStandalone, styled, ThemeProvider } from '../src';
+import { RedocRawOptions } from '../src/services/RedocNormalizedOptions';
+
+import ComboBox from './components/ComboBox';
+import { CheckboxButton } from './components/common-components';
+import ThemesPanel from './components/ThemesPanel';
+
+import defaultTheme, { resolveTheme } from '../src/theme';
 
 const demos = [
   { value: 'https://api.apis.guru/v2/specs/instagram.com/1.0.0/swagger.yaml', label: 'Instagram' },
@@ -23,7 +28,13 @@ const DEFAULT_SPEC = 'openapi.yaml';
 
 class DemoApp extends React.Component<
   {},
-  { specUrl: string; dropdownOpen: boolean; cors: boolean }
+  {
+    specUrl: string;
+    dropdownOpen: boolean;
+    cors: boolean;
+    isOpen: boolean;
+    options: RedocRawOptions;
+  }
 > {
   constructor(props) {
     super(props);
@@ -44,6 +55,8 @@ class DemoApp extends React.Component<
       specUrl: url,
       dropdownOpen: false,
       cors,
+      isOpen: false,
+      options: {},
     };
   }
 
@@ -70,47 +83,106 @@ class DemoApp extends React.Component<
     );
   };
 
+  handleOpenPanel = () => {
+    this.setState({
+      isOpen: true,
+    });
+  };
+
+  handleClosePanel = () => {
+    this.setState({
+      isOpen: false,
+    });
+  };
+
+  handleApply = (options: RedocRawOptions) => {
+    this.setState({
+      options,
+    });
+  };
+
   render() {
-    const { specUrl, cors } = this.state;
+    const { specUrl, cors, options } = this.state;
     let proxiedUrl = specUrl;
     if (specUrl !== DEFAULT_SPEC) {
       proxiedUrl = cors
         ? '\\\\cors.apis.guru/' + urlResolve(window.location.href, specUrl)
         : specUrl;
     }
+
+    const checkedClass = cors ? 'checked' : '';
     return (
-      <>
-        <Heading>
-          <a href=".">
-            <Logo src="https://github.com/Rebilly/ReDoc/raw/master/docs/images/redoc-logo.png" />
-          </a>
-          <ControlsContainer>
-            <ComboBox
-              placeholder={'URL to a spec to try'}
-              options={demos}
-              onChange={this.handleChange}
-              value={specUrl === DEFAULT_SPEC ? '' : specUrl}
+      <ThemeProvider theme={resolveTheme(defaultTheme)}>
+        <>
+          <Heading>
+            <a href=".">
+              <Logo src="https://github.com/Rebilly/ReDoc/raw/master/docs/images/redoc-logo.png" />
+            </a>
+            <ControlsContainer>
+              <ComboBox
+                placeholder={'URL to a spec to try'}
+                options={demos}
+                onChange={this.handleChange}
+                value={specUrl === DEFAULT_SPEC ? '' : specUrl}
+              />
+              <CorsCheckbox title="Use CORS proxy">
+                <CheckboxButton className={checkedClass}>
+                  <input
+                    id="cors_checkbox"
+                    type="checkbox"
+                    onChange={this.toggleCors}
+                    checked={cors}
+                  />
+                  <span />
+                </CheckboxButton>
+                <label htmlFor="cors_checkbox">CORS</label>
+              </CorsCheckbox>
+              <Button onClick={this.handleOpenPanel}>Customize</Button>
+            </ControlsContainer>
+            <iframe
+              src="https://ghbtns.com/github-btn.html?user=Rebilly&amp;repo=ReDoc&amp;type=star&amp;count=true&amp;size=large"
+              frameBorder="0"
+              scrolling="0"
+              width="150px"
+              height="30px"
             />
-            <CorsCheckbox title="Use CORS proxy">
-              <input id="cors_checkbox" type="checkbox" onChange={this.toggleCors} checked={cors} />
-              <label htmlFor="cors_checkbox">CORS</label>
-            </CorsCheckbox>
-          </ControlsContainer>
-          <iframe
-            src="https://ghbtns.com/github-btn.html?user=Rebilly&amp;repo=ReDoc&amp;type=star&amp;count=true&amp;size=large"
-            frameBorder="0"
-            scrolling="0"
-            width="150px"
-            height="30px"
-          />
-        </Heading>
-        <RedocStandalone specUrl={proxiedUrl} options={{ scrollYOffset: 'nav' }} />
-      </>
+          </Heading>
+          <MainWrapper>
+            <RedocStandalone specUrl={proxiedUrl} options={options} />
+            <ThemesPanel
+              isOpen={this.state.isOpen}
+              onClose={this.handleClosePanel}
+              onChange={this.handleApply}
+            />
+          </MainWrapper>
+        </>
+      </ThemeProvider>
     );
   }
 }
 
 /* ====== Styled components ====== */
+
+const MainWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  position: relative;
+`;
+
+const Button = styled.button`
+  outline: none;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  color: #333;
+  font-weight: normal;
+  font-size: 14px;
+  margin-left: 15px;
+  padding: 2px 10px;
+  height: 28px;
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+`;
 
 const ControlsContainer = styled.div`
   display: flex;
@@ -123,7 +195,8 @@ const ControlsContainer = styled.div`
 const CorsCheckbox = styled.div`
   margin-left: 10px;
   white-space: nowrap;
-
+  display: flex;
+  align-items: center;
   label {
     font-size: 13px;
   }
