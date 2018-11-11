@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import { Accordion, AccordionItem } from 'react-sanfona';
 import { CopyButtonWrapper } from '../../src/common-elements/CopyButtonWrapper';
 import { RedocRawOptions } from '../../src/services/RedocNormalizedOptions';
-import styled, { injectGlobal, withProps } from '../../src/styled-components';
+import styled, { createGlobalStyle, withProps } from '../../src/styled-components';
 import defaultTheme, { resolveTheme } from '../../src/theme';
 import { mergeObjects } from '../../src/utils';
 import { CONFIG, ConfigItem, getFontsByType, presets } from '../config';
@@ -33,7 +33,7 @@ const defaultOptions = {
   theme: resolveTheme(mergeObjects({}, defaultTheme)),
 };
 
-injectGlobal`
+createGlobalStyle`
   body {
     &.ReactModal__Body--open {
       overflow: hidden;
