@@ -1,9 +1,11 @@
-import { createMuiTheme, TextField } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core';
 import { styled } from '../../src';
 
 import { StyledDropdown } from '../../src/common-elements/dropdown';
 
-export const theme = createMuiTheme({
+import TextField, { StandardTextFieldProps } from '@material-ui/core/TextField';
+
+export const muiTheme = createMuiTheme({
   palette: {
     primary: {
       main: '#32329f',
@@ -114,7 +116,8 @@ export const OptionWrapper = styled.div`
   align-items: center;
 `;
 
-export const StyledTextField = styled(TextField)`
+// FIXME: some styled-components + ts issue
+export const StyledTextField = styled(TextField as React.ComponentType<StandardTextFieldProps>)`
   && {
     input {
       height: 25px;

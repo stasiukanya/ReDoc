@@ -29,7 +29,7 @@ export default class FontSizeOption extends React.Component<OptionProps, OptionS
     }
   };
 
-  handleChangeUnits = (e, item) => {
+  handleChangeUnits = e => {
     // when switch units change default size approprietly
     const fontSizeValue = e.target.value === 'px' ? 16 : 1.2;
     if (this.props.onChange) {
