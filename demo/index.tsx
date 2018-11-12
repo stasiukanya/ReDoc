@@ -6,7 +6,7 @@ import { RedocRawOptions } from '../src/services/RedocNormalizedOptions';
 
 import { MuiThemeProvider } from '@material-ui/core';
 import ComboBox from './components/ComboBox';
-import { CheckboxButton, theme } from './components/common-components';
+import { CheckboxButton, muiTheme } from './components/common-components';
 import ThemesPanel from './components/ThemesPanel';
 
 import defaultTheme, { resolveTheme } from '../src/theme';
@@ -114,7 +114,7 @@ class DemoApp extends React.Component<
     const checkedClass = cors ? 'checked' : '';
     return (
       <ThemeProvider theme={resolveTheme(defaultTheme)}>
-        <MuiThemeProvider theme={theme}>
+        <MuiThemeProvider theme={muiTheme}>
           <>
             <Heading>
               <a href=".">

@@ -50,12 +50,7 @@ export default class FontSizeOption extends React.Component<OptionProps, OptionS
         <Typography gutterBottom={true}>{title}</Typography>
         <Grid container={true} spacing={8} justify="space-between" alignItems="flex-end">
           <Grid item={true} xs={8}>
-            <StyledTextField
-              type="number"
-              step={step}
-              onChange={this.handleChangeSize}
-              value={parsedValue}
-            />
+            <StyledTextField step={step} onChange={this.handleChangeSize} value={parsedValue} />
           </Grid>
           <Grid item={true} xs={4}>
             <Select onChange={this.handleChangeUnits} value={selectValue} style={{ width: '100%' }}>
