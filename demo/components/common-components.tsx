@@ -1,5 +1,5 @@
 import { createMuiTheme, TextField } from '@material-ui/core';
-import { styled } from '../../src';
+import styled from 'styled-components';
 
 import { StyledDropdown } from '../../src/common-elements/dropdown';
 

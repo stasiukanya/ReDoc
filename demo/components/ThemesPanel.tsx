@@ -99,7 +99,7 @@ export default class ThemesPanel extends React.Component<ThemesPanelProps, Theme
     });
   };
 
-  handleExpandedChange = panel => expanded => {
+  handleExpandedChange = panel => (_e, expanded) => {
     this.setState({
       expanded: expanded ? panel : false,
     });
