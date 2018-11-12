@@ -1,6 +1,18 @@
+import { createMuiTheme, TextField } from '@material-ui/core';
 import { styled } from '../../src';
 
 import { StyledDropdown } from '../../src/common-elements/dropdown';
+
+export const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#32329f',
+    },
+  },
+  typography: {
+    useNextVariants: true,
+  },
+});
 
 export const Dropdown = styled(StyledDropdown)`
   .Dropdown-control {
@@ -100,4 +112,13 @@ export const CheckboxButton = styled.button`
 export const OptionWrapper = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const StyledTextField = styled(TextField)`
+  && {
+    input {
+      height: 25px;
+      padding: 4px 8px;
+    }
+  }
 `;

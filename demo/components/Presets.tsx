@@ -1,13 +1,6 @@
 import * as React from 'react';
-// import styled from 'styled-components';
 
-import { StyledDropdown } from '../../src/common-elements/dropdown';
-
-import { styled } from '../../src';
-
-const Dropdown = styled(StyledDropdown)`
-  margin-bottom: 1em;
-`;
+import { MenuItem, Select, Typography } from '@material-ui/core';
 
 export interface OptionProps {
   onChange?: (value: object) => void;
@@ -29,30 +22,30 @@ export default class Presets extends React.Component<OptionProps, OptionState> {
     };
   }
 
-  handleChangePreset = option => {
+  handleChangePreset = e => {
     this.setState({
-      presetValue: option.value,
+      presetValue: e.target.value,
     });
     if (this.props.onChange) {
-      this.props.onChange(this.props.presets[option.value]);
+      this.props.onChange(this.props.presets[e.target.value]);
     }
   };
 
   render() {
-    const options = Object.keys(this.props.presets).map(name => ({
-      value: name,
-      label: name,
-    }));
-
     return (
       <>
-        <div>Presets:</div>
-        <Dropdown
-          style={{ marginBottom: '1em' }}
+        <Typography>Presets:</Typography>
+        <Select
+          style={{ margin: '1em 0', flexShrink: 0 }}
           onChange={this.handleChangePreset}
           value={this.state.presetValue}
-          options={options}
-        />
+        >
+          {Object.keys(this.props.presets).map(name => (
+            <MenuItem value={name} key={name}>
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
       </>
     );
   }

@@ -1,6 +1,7 @@
 import * as React from 'react';
+
+import { Grid, Typography } from '@material-ui/core';
 import styled from '../../src/styled-components';
-import { OptionWrapper, OptionTitle, OptionValue } from './common-components';
 
 export interface OptionProps {
   onChange: (value: string) => void;
@@ -28,8 +29,8 @@ export default class Range extends React.Component<OptionProps> {
 
     return (
       <>
-        <OptionTitle>{title}</OptionTitle>
-        <OptionWrapper>
+        <Typography gutterBottom={true}>{title}</Typography>
+        <Grid container={true} alignItems="center">
           <Input
             type="range"
             value={parsedValue}
@@ -38,8 +39,10 @@ export default class Range extends React.Component<OptionProps> {
             max={max}
             onChange={this.handleChangeWidth}
           />
-          <OptionValue>{`${parsedValue} ${units}`}</OptionValue>
-        </OptionWrapper>
+          <Typography variant="body2" style={{ marginLeft: 10 }}>
+            {`${parsedValue} ${units}`}
+          </Typography>
+        </Grid>
       </>
     );
   }
@@ -48,6 +51,7 @@ export default class Range extends React.Component<OptionProps> {
 const Input = styled.input`
   -webkit-appearance: none;
   background: transparent;
+  width: 65%;
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     height: 15px;

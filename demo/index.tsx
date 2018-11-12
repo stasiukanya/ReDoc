@@ -4,8 +4,9 @@ import { resolve as urlResolve } from 'url';
 import { RedocStandalone, styled, ThemeProvider } from '../src';
 import { RedocRawOptions } from '../src/services/RedocNormalizedOptions';
 
+import { MuiThemeProvider } from '@material-ui/core';
 import ComboBox from './components/ComboBox';
-import { CheckboxButton } from './components/common-components';
+import { CheckboxButton, theme } from './components/common-components';
 import ThemesPanel from './components/ThemesPanel';
 
 import defaultTheme, { resolveTheme } from '../src/theme';
@@ -113,49 +114,51 @@ class DemoApp extends React.Component<
     const checkedClass = cors ? 'checked' : '';
     return (
       <ThemeProvider theme={resolveTheme(defaultTheme)}>
-        <>
-          <Heading>
-            <a href=".">
-              <Logo src="https://github.com/Rebilly/ReDoc/raw/master/docs/images/redoc-logo.png" />
-            </a>
-            <ControlsContainer>
-              <ComboBox
-                placeholder={'URL to a spec to try'}
-                options={demos}
-                onChange={this.handleChange}
-                value={specUrl === DEFAULT_SPEC ? '' : specUrl}
+        <MuiThemeProvider theme={theme}>
+          <>
+            <Heading>
+              <a href=".">
+                <Logo src="https://github.com/Rebilly/ReDoc/raw/master/docs/images/redoc-logo.png" />
+              </a>
+              <ControlsContainer>
+                <ComboBox
+                  placeholder={'URL to a spec to try'}
+                  options={demos}
+                  onChange={this.handleChange}
+                  value={specUrl === DEFAULT_SPEC ? '' : specUrl}
+                />
+                <CorsCheckbox title="Use CORS proxy">
+                  <CheckboxButton className={checkedClass}>
+                    <input
+                      id="cors_checkbox"
+                      type="checkbox"
+                      onChange={this.toggleCors}
+                      checked={cors}
+                    />
+                    <span />
+                  </CheckboxButton>
+                  <label htmlFor="cors_checkbox">CORS</label>
+                </CorsCheckbox>
+                <Button onClick={this.handleOpenPanel}>Customize</Button>
+              </ControlsContainer>
+              <iframe
+                src="https://ghbtns.com/github-btn.html?user=Rebilly&amp;repo=ReDoc&amp;type=star&amp;count=true&amp;size=large"
+                frameBorder="0"
+                scrolling="0"
+                width="150px"
+                height="30px"
               />
-              <CorsCheckbox title="Use CORS proxy">
-                <CheckboxButton className={checkedClass}>
-                  <input
-                    id="cors_checkbox"
-                    type="checkbox"
-                    onChange={this.toggleCors}
-                    checked={cors}
-                  />
-                  <span />
-                </CheckboxButton>
-                <label htmlFor="cors_checkbox">CORS</label>
-              </CorsCheckbox>
-              <Button onClick={this.handleOpenPanel}>Customize</Button>
-            </ControlsContainer>
-            <iframe
-              src="https://ghbtns.com/github-btn.html?user=Rebilly&amp;repo=ReDoc&amp;type=star&amp;count=true&amp;size=large"
-              frameBorder="0"
-              scrolling="0"
-              width="150px"
-              height="30px"
-            />
-          </Heading>
-          <MainWrapper>
-            <RedocStandalone specUrl={proxiedUrl} options={options} />
-            <ThemesPanel
-              isOpen={this.state.isOpen}
-              onClose={this.handleClosePanel}
-              onChange={this.handleApply}
-            />
-          </MainWrapper>
-        </>
+            </Heading>
+            <MainWrapper>
+              <RedocStandalone specUrl={proxiedUrl} options={options} />
+              <ThemesPanel
+                isOpen={this.state.isOpen}
+                onClose={this.handleClosePanel}
+                onChange={this.handleApply}
+              />
+            </MainWrapper>
+          </>
+        </MuiThemeProvider>
       </ThemeProvider>
     );
   }

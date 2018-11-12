@@ -1,7 +1,8 @@
 import * as React from 'react';
+
+import { Grid, Typography } from '@material-ui/core';
 import { ChromePicker } from 'react-color';
 import styled, { withProps } from '../../src/styled-components';
-import { OptionWrapper, OptionTitle, OptionValue } from './common-components';
 
 export interface OptionProps {
   onChange: (value: string) => void;
@@ -44,12 +45,14 @@ export default class ColorsOption extends React.Component<OptionProps, OptionSta
     const { value, title } = this.props;
     return (
       <>
-        <OptionTitle>{title}</OptionTitle>
+        <Typography gutterBottom={true}>{title}</Typography>
         <div>
-          <OptionWrapper>
+          <Grid container={true} alignItems="center">
             <Button onClick={this.handleClick} buttonBackground={value} />
-            <OptionValue>{value}</OptionValue>
-          </OptionWrapper>
+            <Typography variant="body2" style={{ marginLeft: 10 }}>
+              {value}
+            </Typography>
+          </Grid>
           {this.state.displayColorPicker ? (
             <>
               <Cover onClick={this.handleClose} />
@@ -62,8 +65,8 @@ export default class ColorsOption extends React.Component<OptionProps, OptionSta
   }
 }
 
-const Button = withProps<{ buttonBackground?: string }>(styled.div)`
-  background-color: ${props => props.buttonBackground};
+const Button = withProps<{ buttonBackground: string }>(styled.div)`
+  background-color: ${({ buttonBackground }) => buttonBackground};
   height: 15px;
   width: 30px;
   border: 2px solid #fff;
@@ -72,12 +75,12 @@ const Button = withProps<{ buttonBackground?: string }>(styled.div)`
   cursor: pointer;
 `;
 
-const StyledBlockPicker = withProps<{ color?: string }>(styled(ChromePicker))`
+const StyledBlockPicker = styled(ChromePicker)`
   font-family: Roboto, sans-serif;
   margin-top: 15px;
   position: relative;
   z-index: 2;
-  box-shadow: none!important;
+  box-shadow: none !important;
 `;
 
 const Cover = styled.div`

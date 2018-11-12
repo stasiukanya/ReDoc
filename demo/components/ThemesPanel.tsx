@@ -1,9 +1,19 @@
 import * as React from 'react';
-import Modal from 'react-modal';
-import { Accordion, AccordionItem } from 'react-sanfona';
+
+import {
+  Button,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  Grid,
+  Modal,
+  TextField,
+  Typography,
+} from '@material-ui/core';
+import { Close, ExpandMore } from '@material-ui/icons';
 import { CopyButtonWrapper } from '../../src/common-elements/CopyButtonWrapper';
 import { RedocRawOptions } from '../../src/services/RedocNormalizedOptions';
-import styled, { createGlobalStyle, withProps } from '../../src/styled-components';
+import styled from '../../src/styled-components';
 import defaultTheme, { resolveTheme } from '../../src/theme';
 import { mergeObjects } from '../../src/utils';
 import { CONFIG, ConfigItem, getFontsByType, presets } from '../config';
@@ -33,14 +43,6 @@ const defaultOptions = {
   theme: resolveTheme(mergeObjects({}, defaultTheme)),
 };
 
-createGlobalStyle`
-  body {
-    &.ReactModal__Body--open {
-      overflow: hidden;
-    }
-  }
-`;
-
 export interface ThemesPanelProps {
   isOpen: boolean;
 
@@ -51,12 +53,14 @@ export interface ThemesPanelProps {
 export interface ThemesPanelState {
   options: RedocRawOptions;
   modalIsOpen: boolean;
+  expanded: any;
 }
 
 export default class ThemesPanel extends React.Component<ThemesPanelProps, ThemesPanelState> {
   state = {
     options: {},
     modalIsOpen: false,
+    expanded: null,
   };
 
   handleClose = () => {
@@ -92,6 +96,12 @@ export default class ThemesPanel extends React.Component<ThemesPanelProps, Theme
   handleModalClose = () => {
     this.setState({
       modalIsOpen: false,
+    });
+  };
+
+  handleExpandedChange = panel => expanded => {
+    this.setState({
+      expanded: expanded ? panel : false,
     });
   };
 
@@ -136,233 +146,151 @@ export default class ThemesPanel extends React.Component<ThemesPanelProps, Theme
 
   renderInnerCopyButton = ({ renderCopyButton }) => {
     return (
-      <Button minWidth="90px" padding="0">
+      <CopyButton color="primary" variant="contained">
         {renderCopyButton()}
-      </Button>
+      </CopyButton>
     );
   };
 
   render() {
-    const codeSnippet = getPageHtml(this.state.options);
+    const { expanded, modalIsOpen, options } = this.state;
+    const codeSnippet = getPageHtml(options);
     return this.props.isOpen ? (
       <PanelWrap>
         <div>
-          <CloseButton onClick={this.handleClose}>
-            <span />
-            <span />
-          </CloseButton>
+          <CloseIcon onClick={this.handleClose} fontSize="small" />
         </div>
         {/* tslint:disable-next-line */}
         <Presets presets={presets} onChange={theme => this.handleOptionChange(theme, 'theme')} />
-        <AccordionWrap>
-          <StyledAccordion>
-            {CONFIG.map(group => {
-              return (
-                <StyledAccordionItem
-                  key={group.title}
-                  title={group.title}
-                  expanded={CONFIG[0] === group}
-                >
-                  {group.items.map(item => (
-                    <StyledBoxItem key={item.path}>{this.renderItem(item)}</StyledBoxItem>
-                  ))}
-                </StyledAccordionItem>
-              );
-            })}
-          </StyledAccordion>
-        </AccordionWrap>
-        <Button onClick={this.handleModalOpen} width="100%" padding="7px 15px">
+        {CONFIG.map(group => {
+          return (
+            <StyledExpansionPanel
+              key={group.title}
+              expanded={expanded === group.title}
+              defaultExpanded={CONFIG[0] === group}
+              onChange={this.handleExpandedChange(group.title)}
+            >
+              <StyledExpansionPanelSummary
+                expandIcon={<ExpandMore />}
+                IconButtonProps={{
+                  style: {
+                    padding: 0,
+                    right: 0,
+                  },
+                }}
+              >
+                <Typography variant="body1">{group.title}</Typography>
+              </StyledExpansionPanelSummary>
+              <StyledExpansionPanelDetails>
+                {group.items.map(item => (
+                  <div key={item.path} style={{ marginTop: 10 }}>
+                    {this.renderItem(item)}
+                  </div>
+                ))}
+              </StyledExpansionPanelDetails>
+            </StyledExpansionPanel>
+          );
+        })}
+        <Button
+          onClick={this.handleModalOpen}
+          color="primary"
+          variant="contained"
+          style={{ marginTop: 10 }}
+        >
           Copy code snippet
         </Button>
-        <StyledModal
-          isOpen={this.state.modalIsOpen}
-          onRequestClose={this.handleModalClose}
-          ariaHideApp={false}
-          shouldCloseOnOverlayClick={true}
-          style={{
-            overlay: {
-              zIndex: 5,
-            },
-          }}
-        >
-          <div>
-            <CloseButton onClick={this.handleModalClose}>
-              <span />
-              <span />
-            </CloseButton>
-          </div>
-          <CodeWrap>
-            <Code defaultValue={codeSnippet} />
-            <CopyButtonWrapper data={codeSnippet}>{this.renderInnerCopyButton}</CopyButtonWrapper>
-          </CodeWrap>
-        </StyledModal>
+        <Modal open={modalIsOpen} onClose={this.handleModalClose} disableAutoFocus={true}>
+          <ModalInner>
+            <CloseIcon onClick={this.handleModalClose} fontSize="small" />
+            <Grid container={true} direction="column" alignItems="flex-end">
+              <TextField
+                defaultValue={codeSnippet}
+                multiline={true}
+                rowsMax={10}
+                autoFocus={true}
+                fullWidth={true}
+                variant="outlined"
+                inputProps={{
+                  style: { fontFamily: 'Courier, monospace', fontSize: '13px' },
+                }}
+              />
+              <CopyButtonWrapper data={codeSnippet}>{this.renderInnerCopyButton}</CopyButtonWrapper>
+            </Grid>
+          </ModalInner>
+        </Modal>
       </PanelWrap>
     ) : null;
   }
 }
 
 const PanelWrap = styled.div`
-  font-family: Montserrat, sans-serif;
-  font-size: 14px;
-
   position: sticky;
   top: 50px;
   flex-shrink: 0;
   max-height: calc(100vh - 50px);
+  overflow-y: auto;
   width: 300px;
   background-color: #fff;
   box-sizing: border-box;
-  padding: 20px 30px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 `;
 
-const StyledBoxItem = styled.div`
-  margin-top: 10px;
-`;
-
-const CloseButton = styled.div`
-  height: 10px;
-  margin-bottom: 15px;
-  cursor: pointer;
-  display: inline-block;
-  padding: 5px 0 0;
-  cursor: pointer;
-  span {
-    display: block;
-    height: 3px;
-    width: 15px;
-    background-color: #333;
-    border-radius: 30px;
-    &:first-child {
-      transform: rotate(45deg) translateY(2px);
-    }
-    &:nth-child(2) {
-      transform: rotate(-45deg) translateY(-2px);
+const StyledExpansionPanel = styled(ExpansionPanel)`
+  && {
+    box-shadow: none;
+    margin: 0;
+    &::before {
+      content: none;
     }
   }
 `;
 
-const Button = withProps<{ width?: string; minWidth?: string; padding?: string }>(styled.button)`
-  border: 1px solid #32329f;
-  background-color: transparent;
-  color: #32329f;
-  font-weight: normal;
-  margin-top: 20px;
-  padding:  ${props => props.padding};
-  display: inline-block;
-  -webkit-text-decoration: none;
-  text-decoration: none;
-  cursor: pointer;
-  outline: none;
-  min-width: ${props => props.minWidth};
-  width: ${props => props.width};
-  flex-shrink: 0;
-  span {
-    box-sizing: border-box;
-    display: block;
-    width: 100%;
-    padding: 7px 15px;
-  }
-`;
-
-const StyledAccordion = styled(Accordion)`
-  width: 100%;
-`;
-
-const StyledAccordionItem = styled(AccordionItem)`
-  padding: 10px 0;
-  .react-sanfona-item-title {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    color: #333;
-    font-weight: 400;
-    transition: opacity 0.35s ease;
-    &:hover {
-      opacity: 0.7;
-    }
-    &::after {
-      content: '';
-      display: block;
-      margin-left: 10px;
-      width: 10px;
-      height: 10px;
-      background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%20284.929%20284.929%22%3E%3Cpath%20d%3D%22M282.082%2076.511l-14.274-14.273c-1.902-1.906-4.093-2.856-6.57-2.856-2.471%200-4.661.95-6.563%202.856L142.466%20174.441%2030.262%2062.241c-1.903-1.906-4.093-2.856-6.567-2.856-2.475%200-4.665.95-6.567%202.856L2.856%2076.515C.95%2078.417%200%2080.607%200%2083.082c0%202.473.953%204.663%202.856%206.565l133.043%20133.046c1.902%201.903%204.093%202.854%206.567%202.854s4.661-.951%206.562-2.854L282.082%2089.647c1.902-1.903%202.847-4.093%202.847-6.565%200-2.475-.945-4.665-2.847-6.571z%22%20fill%3D%22%23333%22%2F%3E%3C%2Fsvg%3E');
-      background-repeat: no-repeat;
-      background-size: contain;
-      transition: transform 0.35s ease;
-    }
-  }
-  &.react-sanfona-item-expanded {
-    .react-sanfona-item-body {
-      max-height: none !important;
-    }
-    .react-sanfona-item-title::after {
-      transform: rotate(-180deg);
+const StyledExpansionPanelSummary = styled(ExpansionPanelSummary)`
+  && {
+    padding: 0;
+    min-height: 40px !important;
+    div {
+      margin: 0;
     }
   }
 `;
-
-const AccordionWrap = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow-y: auto;
-
-  margin: 0 -30px;
-  padding: 0 30px;
+const StyledExpansionPanelDetails = styled(ExpansionPanelDetails)`
+  && {
+    flex-direction: column;
+    padding: 0 24px 10px 0;
+  }
 `;
 
-const StyledModal = styled(Modal)`
-  opacity: 0;
+const ModalInner = styled.div`
   max-width: 70%;
+  background: #fff;
+  padding: 16px;
+  text-align: right;
+  position: absolute;
   width: 100%;
   top: 50%;
   left: 50%;
-  right: auto;
-  bottom: auto;
   transform: translate(-50%, -50%);
-  max-height: 80vh;
-  overflow-y: auto;
-  position: absolute;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 3px;
   outline: none;
-  transition: all 0.35s ease;
-  &.ReactModal__Content--after-open {
-    opacity: 1;
-  }
-
-  &.ReactModal__Content--before-close {
-    opacity: 0;
-  }
 `;
 
-const CodeWrap = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  width: 100%;
+const CloseIcon = styled(Close)`
+  margin-bottom: 15px;
+  cursor: pointer;
 `;
 
-const Code = styled.textarea`
-  padding: 15px;
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 60vh;
-  color: #333;
-  overflow-x: auto;
-  font-family: Courier, monospace;
-  font-size: 13px;
-  line-height: 1.4;
-  white-space: pre;
-  resize: none;
+const CopyButton = styled(Button)`
+  && {
+    padding: 0;
+    margin-top: 10px;
+    > span {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 16px;
+    }
+  }
 `;
