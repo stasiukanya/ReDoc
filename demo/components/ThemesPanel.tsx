@@ -18,7 +18,7 @@ import defaultTheme, { resolveTheme } from '../../src/theme';
 import { mergeObjects } from '../../src/utils';
 import { CONFIG, ConfigItem, getFontsByType, presets } from '../config';
 import { generateFonts, getPageHtml, getValue, setValue } from '../helpers';
-import Checkbox from './Checkbox';
+import CheckboxInput from './CheckboxInput';
 import ColorsOption from './ColorsOption';
 import FontFamilyOption from './FontFamilyOption';
 import FontSizeOption from './FontSizeOption';
@@ -53,14 +53,14 @@ export interface ThemesPanelProps {
 export interface ThemesPanelState {
   options: RedocRawOptions;
   modalIsOpen: boolean;
-  expanded: any;
+  expanded: boolean | string;
 }
 
 export default class ThemesPanel extends React.Component<ThemesPanelProps, ThemesPanelState> {
   state = {
     options: {},
     modalIsOpen: false,
-    expanded: null,
+    expanded: CONFIG[0].title,
   };
 
   handleClose = () => {
@@ -136,20 +136,12 @@ export default class ThemesPanel extends React.Component<ThemesPanelProps, Theme
     }
 
     if (item.type === 'checkbox') {
-      return <Checkbox {...props} description={item.description} />;
+      return <CheckboxInput {...props} description={item.description} />;
     }
 
     if (item.type === 'text-input') {
       return <TextInput {...props} placeholder={item.placeholder} />;
     }
-  };
-
-  renderInnerCopyButton = ({ renderCopyButton }) => {
-    return (
-      <CopyButton color="primary" variant="contained">
-        {renderCopyButton()}
-      </CopyButton>
-    );
   };
 
   render() {
@@ -167,7 +159,6 @@ export default class ThemesPanel extends React.Component<ThemesPanelProps, Theme
             <StyledExpansionPanel
               key={group.title}
               expanded={expanded === group.title}
-              defaultExpanded={CONFIG[0] === group}
               onChange={this.handleExpandedChange(group.title)}
             >
               <StyledExpansionPanelSummary
@@ -214,7 +205,13 @@ export default class ThemesPanel extends React.Component<ThemesPanelProps, Theme
                   style: { fontFamily: 'Courier, monospace', fontSize: '13px' },
                 }}
               />
-              <CopyButtonWrapper data={codeSnippet}>{this.renderInnerCopyButton}</CopyButtonWrapper>
+              <CopyButtonWrapper data={codeSnippet}>
+                {({ renderCopyButton }) => (
+                  <CopyButton color="primary" variant="contained">
+                    {renderCopyButton()}
+                  </CopyButton>
+                )}
+              </CopyButtonWrapper>
             </Grid>
           </ModalInner>
         </Modal>
@@ -286,11 +283,11 @@ const CopyButton = styled(Button)`
   && {
     padding: 0;
     margin-top: 10px;
-    > span {
+    span {
       display: block;
       width: 100%;
       box-sizing: border-box;
-      padding: 8px 16px;
+      padding: 0;
     }
   }
 `;

@@ -29,7 +29,7 @@ export default class FontSizeOption extends React.Component<OptionProps, OptionS
     }
   };
 
-  handleChangeUnits = (e, item) => {
+  handleChangeUnits = e => {
     // when switch units change default size approprietly
     const fontSizeValue = e.target.value === 'px' ? 16 : 1.2;
     if (this.props.onChange) {
@@ -50,7 +50,12 @@ export default class FontSizeOption extends React.Component<OptionProps, OptionS
         <Typography gutterBottom={true}>{title}</Typography>
         <Grid container={true} spacing={8} justify="space-between" alignItems="flex-end">
           <Grid item={true} xs={8}>
-            <StyledTextField step={step} onChange={this.handleChangeSize} value={parsedValue} />
+            <StyledTextField
+              type="number"
+              inputProps={{ step }}
+              onChange={this.handleChangeSize}
+              value={parsedValue}
+            />
           </Grid>
           <Grid item={true} xs={4}>
             <Select onChange={this.handleChangeUnits} value={selectValue} style={{ width: '100%' }}>

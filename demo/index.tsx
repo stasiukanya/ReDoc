@@ -4,9 +4,10 @@ import { resolve as urlResolve } from 'url';
 import { RedocStandalone, styled, ThemeProvider } from '../src';
 import { RedocRawOptions } from '../src/services/RedocNormalizedOptions';
 
-import { MuiThemeProvider } from '@material-ui/core';
+import { Button, Checkbox, FormControlLabel, FormGroup, MuiThemeProvider } from '@material-ui/core';
+import { CheckBox, CheckBoxOutlineBlank } from '@material-ui/icons';
 import ComboBox from './components/ComboBox';
-import { CheckboxButton, muiTheme } from './components/common-components';
+import { muiTheme } from './components/common-components';
 import ThemesPanel from './components/ThemesPanel';
 
 import defaultTheme, { resolveTheme } from '../src/theme';
@@ -111,7 +112,6 @@ class DemoApp extends React.Component<
         : specUrl;
     }
 
-    const checkedClass = cors ? 'checked' : '';
     return (
       <ThemeProvider theme={resolveTheme(defaultTheme)}>
         <MuiThemeProvider theme={muiTheme}>
@@ -127,19 +127,30 @@ class DemoApp extends React.Component<
                   onChange={this.handleChange}
                   value={specUrl === DEFAULT_SPEC ? '' : specUrl}
                 />
-                <CorsCheckbox title="Use CORS proxy">
-                  <CheckboxButton className={checkedClass}>
-                    <input
-                      id="cors_checkbox"
-                      type="checkbox"
-                      onChange={this.toggleCors}
-                      checked={cors}
-                    />
-                    <span />
-                  </CheckboxButton>
-                  <label htmlFor="cors_checkbox">CORS</label>
-                </CorsCheckbox>
-                <Button onClick={this.handleOpenPanel}>Customize</Button>
+                <FormGroup row={true} style={{ marginLeft: 15 }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        type="checkbox"
+                        onChange={this.toggleCors}
+                        checked={cors}
+                        disableRipple={true}
+                        icon={<CheckBoxOutlineBlank fontSize="small" />}
+                        checkedIcon={<CheckBox fontSize="small" />}
+                        color="primary"
+                      />
+                    }
+                    label="CORS"
+                  />
+                </FormGroup>
+                <Button
+                  onClick={this.handleOpenPanel}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                >
+                  Customize
+                </Button>
               </ControlsContainer>
               <iframe
                 src="https://ghbtns.com/github-btn.html?user=Rebilly&amp;repo=ReDoc&amp;type=star&amp;count=true&amp;size=large"
@@ -172,41 +183,12 @@ const MainWrapper = styled.div`
   position: relative;
 `;
 
-const Button = styled.button`
-  outline: none;
-  background-color: transparent;
-  border: 1px solid #ddd;
-  color: #333;
-  font-weight: normal;
-  font-size: 14px;
-  margin-left: 15px;
-  padding: 2px 10px;
-  height: 28px;
-  display: inline-block;
-  text-decoration: none;
-  cursor: pointer;
-`;
-
 const ControlsContainer = styled.div`
   display: flex;
   justify-content: center;
   flex: 1;
   margin: 0 15px;
   align-items: center;
-`;
-
-const CorsCheckbox = styled.div`
-  margin-left: 10px;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  label {
-    font-size: 13px;
-  }
-
-  @media screen and (max-width: 550px) {
-    display: none;
-  }
 `;
 
 const Heading = styled.nav`

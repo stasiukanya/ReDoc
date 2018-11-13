@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { Input, OptionTitle } from './common-components';
+
+import { Typography } from '@material-ui/core';
+import { StyledTextField } from './common-components';
 
 export interface OptionProps {
   onChange?: (value: string) => void;
@@ -19,8 +21,13 @@ export default class TextInput extends React.Component<OptionProps> {
     const { placeholder, title, value } = this.props;
     return (
       <>
-        <OptionTitle>{title}</OptionTitle>
-        <Input type="text" placeholder={placeholder} onChange={this.handleChange} value={value} />
+        <Typography gutterBottom={true}>{title}</Typography>
+        <StyledTextField
+          type="text"
+          placeholder={placeholder}
+          onChange={this.handleChange}
+          value={value}
+        />
       </>
     );
   }
